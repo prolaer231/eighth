@@ -55,7 +55,7 @@ class ApkBuilderService {
       }
       final List<int> zipData = ZipEncoder().encode(archive)!;
       // In a real app, this zipData would be uploaded
-      print('Project bundled: ${zipData.length} bytes');
+      final _ = zipData; // Silencing unused variable warning if any
       await Future.delayed(const Duration(seconds: 1));
 
       // 2. Uploading Phase

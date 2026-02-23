@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../services/apk_builder_service.dart';
 import '../../models/project.dart';
@@ -192,35 +193,45 @@ class _BuildStatusScreenState extends State<BuildStatusScreen> {
       child: Column(
         children: [
           const Text(
-            'The professional APK is ready for download!',
+            'The professional APK is ready!',
             style: TextStyle(color: Colors.white70),
           ),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.black26,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.blue.withOpacity(0.3)),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.link, color: Colors.blue, size: 16),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: SelectableText(
-                    _finalApkUrl ?? 'Unknown URL',
-                    style: const TextStyle(
-                      color: Colors.blue,
-                      fontSize: 12,
-                      fontFamily: 'monospace',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
           const SizedBox(height: 16),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.download_rounded),
+            label: const Text('Download & Install APK'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blueAccent,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 8,
+            ),
+            onPressed: () async {
+              if (_finalApkUrl != null) {
+                final uri = Uri.parse(_finalApkUrl!);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                }
+              }
+            },
+          ),
+          const SizedBox(height: 12),
+          TextButton.icon(
+            icon: const Icon(Icons.open_in_new, size: 14),
+            label: Text(
+              _finalApkUrl ?? 'Link not found',
+              style: const TextStyle(
+                fontSize: 10,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+            style: TextButton.styleFrom(foregroundColor: Colors.grey),
+            onPressed: () {}, // Just for display
+          ),
+          const SizedBox(height: 24),
           ElevatedButton.icon(
             icon: const Icon(Icons.done),
             label: const Text('Back to Editor'),
