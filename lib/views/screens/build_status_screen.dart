@@ -27,6 +27,7 @@ class _BuildStatusScreenState extends State<BuildStatusScreen> {
   double _progress = 0.0;
   BuildStatus _currentStatus = BuildStatus.idle;
   String? _finalApkUrl;
+  String? _finalLocalPath;
 
   @override
   void initState() {
@@ -45,6 +46,7 @@ class _BuildStatusScreenState extends State<BuildStatusScreen> {
           );
           if (update.status == BuildStatus.success) {
             _finalApkUrl = update.apkUrl;
+            _finalLocalPath = update.localPath;
           }
         });
       }
@@ -193,9 +195,25 @@ class _BuildStatusScreenState extends State<BuildStatusScreen> {
       child: Column(
         children: [
           const Text(
-            'The professional APK is ready!',
+            'Build Complete!',
             style: TextStyle(color: Colors.white70),
           ),
+          if (_finalLocalPath != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              'Project bundle saved locally to:',
+              style: TextStyle(color: Colors.grey[500], fontSize: 10),
+            ),
+            SelectableText(
+              _finalLocalPath!,
+              style: const TextStyle(
+                color: Colors.blue,
+                fontSize: 10,
+                fontFamily: 'monospace',
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ],
           const SizedBox(height: 16),
           ElevatedButton.icon(
             icon: const Icon(Icons.download_rounded),
